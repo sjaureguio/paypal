@@ -49,11 +49,13 @@ func startServerWithEcho() {
 	}
 
 	// Start server
-	log.Print(
-		e.StartTLS(
-			port,
-			os.Getenv("SSL_PUBLIC_KEY"),
-			os.Getenv("SSL_PRIVATE_KEY"),
-		),
-	)
+	log.Print(e.Start(port))
+
+	//log.Print(
+	//	e.StartTLS(
+	//		port,
+	//		os.Getenv("SSL_PUBLIC_KEY"),
+	//		os.Getenv("SSL_PRIVATE_KEY"),
+	//	),
+	//)
 }

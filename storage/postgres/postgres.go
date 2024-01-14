@@ -21,16 +21,10 @@ func New() (*sql.DB, error) {
 
 	dsn := fmt.Sprintf(
 		"postgres://%s:%s@%s:%s/%s?sslmode=%s",
-		userName,
-		password,
-		host,
-		port,
-		database,
-		sslMode,
+		userName, password, host, port, database, sslMode,
 	)
 
 	db, err := sql.Open("postgres", dsn)
-
 	if err != nil {
 		return nil, err
 	}

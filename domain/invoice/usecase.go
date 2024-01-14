@@ -11,7 +11,7 @@ type UseCase struct {
 }
 
 func (uc UseCase) FindByEmail(email string) (models.Invoices, error) {
-	//TODO implement me
+	// TODO: implement me
 	panic("implement me")
 }
 

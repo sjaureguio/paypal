@@ -1,17 +1,11 @@
 package product
 
 import (
-	"context"
 	"database/sql"
 	"github.com/google/uuid"
 	"github.com/sjaureguio/paypal/models"
 	"github.com/sjaureguio/paypal/storage/postgres"
-)
-
-const (
-	query     = "SELECT * FROM products"
-	queryAll  = " ORDER BY name"
-	queryByID = " WHERE id = $1"
+	"log"
 )
 
 type Product struct {
@@ -23,51 +17,37 @@ func New(db *sql.DB) Product {
 }
 
 func (p Product) FindAll() (models.Products, error) {
-	emptyCtx := context.Background()
-	stmt, err := p.db.PrepareContext(emptyCtx, query)
-
+	rows, err := p.db.Query(query + queryAll)
 	if err != nil {
 		return nil, err
 	}
 
-	defer stmt.Close()
-
-	rows, err := stmt.QueryContext(emptyCtx)
-	if err != nil {
-		return nil, err
-	}
-
-	defer rows.Close()
+	defer func(rows *sql.Rows) {
+		err := rows.Close()
+		if err != nil {
+			log.Fatal("Pool de conexión no cerrada ", err)
+		}
+	}(rows)
 
 	var resp models.Products
-
 	for rows.Next() {
-		prod, err := p.scan(rows)
+		row, err := p.scan(rows)
 		if err != nil {
 			return nil, err
 		}
 
-		resp = append(resp, prod)
+		resp = append(resp, row)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
 	}
 
 	return resp, nil
 }
 
 func (p Product) FindByID(ID uuid.UUID) (models.Product, error) {
-	emptyCtx := context.Background()
-	stmt, err := p.db.PrepareContext(emptyCtx, query+queryByID)
-	if err != nil {
-		return models.Product{}, err
-	}
-
-	defer func(stmt *sql.Stmt) {
-		err := stmt.Close()
-		if err != nil {
-			return
-		}
-	}(stmt)
-
-	row := stmt.QueryRowContext(emptyCtx, ID)
+	row := p.db.QueryRow(query+queryByID, ID)
 
 	return p.scan(row)
 }

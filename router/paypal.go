@@ -19,6 +19,7 @@ func PayPal(e *echo.Echo, db *sql.DB) {
 	useCaseOrder := buildOrder(db)
 	useCaseSubs := buildSubs(db)
 	useCaseInvoice := buildInvoice(db)
+
 	useCasePayPal := paypal.New(useCaseOrder, useCaseSubs, useCaseInvoice)
 
 	handler.NewRouter(e, useCasePayPal)

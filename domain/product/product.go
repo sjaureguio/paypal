@@ -6,7 +6,7 @@ import (
 )
 
 // ************************
-// ******* POR OUT ********
+// ******* PORT OUT *******
 // ************************
 
 type Storage interface {
@@ -15,8 +15,10 @@ type Storage interface {
 }
 
 // ************************
-// ******* POR IN *********
+// ******* PORT IN ********
 // ************************
+
+// Equivalent a service
 
 type Product interface {
 	FindAll() (models.Products, error)
